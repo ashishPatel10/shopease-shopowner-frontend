@@ -11,7 +11,8 @@ const TableContent = () => {
         { title: 'Upgraded', dataIndex: 'upgradeNum', key: 'upgradeNum' },
         { title: 'Creator', dataIndex: 'creator', key: 'creator' },
         { title: 'Date', dataIndex: 'createdAt', key: 'createdAt' },
-        { title: 'Action', key: 'operation', render: () => <a>Publish</a> },
+        { title: 'Action', key: 'operation', render: () => <a>Edit</a> },
+        { title: 'Action', key: 'operation1', render: () => <a>Delete</a> },
       ];
 
       const data = [];
