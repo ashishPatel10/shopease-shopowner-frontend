@@ -8,7 +8,7 @@ import {
   UploadOutlined,
 } from '@ant-design/icons';
 import "./Dashboard.scss";
-import { Switch, } from "react-router-dom";
+import { Switch,NavLink } from "react-router-dom";
 
 import PrivateRoute from "../../routes/privateRoutes";
 import Categories from "../Categories/Categories";
@@ -32,11 +32,13 @@ const Dashboard = () => {
         <Sider trigger={null} collapsible collapsed={collapsed}>
           <div className="logo" > {collapsed ? <h2>SS</h2> : <h2>ShopEASE</h2> }</div>
           <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
-            <Menu.Item key="1" icon={<UserOutlined />}>
+            <Menu.Item key="1" icon={<UserOutlined />}> 
               nav 1
             </Menu.Item>
-            <Menu.Item key="2" icon={<VideoCameraOutlined />}>
-              Category
+            <Menu.Item key="2" icon={<VideoCameraOutlined />}> <NavLink to='/categories' activeStyle>
+            Category
+            </NavLink>
+              
             </Menu.Item>
             <Menu.Item key="3" icon={<UploadOutlined />}>
               nav 3
@@ -57,14 +59,14 @@ const Dashboard = () => {
               padding: 24,
               height: "100vh",
             }}
-          >
+          > 
            <Switch>
-            <PrivateRoute exact={true} path="/categories" component={Categories} />
-             {/* <PrivateRoute exact={true} path="/products" component={Products} /> */}
-            <PrivateRoute exact={true} path="/profile" component={StoreProfile} />
+              <PrivateRoute exact={true} path="/categories" component={Categories} />
+              {/* <PrivateRoute exact={true} path="/products" component={Products} /> */}
+              <PrivateRoute exact={true} path="/profile" component={StoreProfile} />
+              
             
-            
-        </Switch>
+            </Switch>
           </Content>
         </Layout>
       </Layout> );
