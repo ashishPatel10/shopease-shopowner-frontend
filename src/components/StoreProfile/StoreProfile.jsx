@@ -26,6 +26,17 @@ const StoreProfile = ({submitStoreDetails,formStoreProfile}) => {
                         <Input placeholder="Store Name"  />
                     </Form.Item>
                     <Form.Item
+                        name="storeCode"
+                        rules={[
+                        {
+                            required: true,
+                            message: "Please input store code!",
+                        },
+                        ]}
+                    >
+                        <Input type="number" placeholder="Store Code"  />
+                    </Form.Item>
+                    <Form.Item
                         name="streetName"
                         rules={[
                         {
@@ -36,18 +47,7 @@ const StoreProfile = ({submitStoreDetails,formStoreProfile}) => {
                     >
                         <Input placeholder="Street Name"  />
                     </Form.Item>
-                    <Form.Item
-                        name="postalCode"
-                        rules={[
-                        {
-                            required: true,
-                            message: "Please input postalCode!",
-                            
-                        },
-                        ]}
-                    >
-                        <Input placeholder="Postal Code"  />
-                    </Form.Item>
+                   
                     <Form.Item
                         name="city"
                         rules={[
@@ -73,6 +73,18 @@ const StoreProfile = ({submitStoreDetails,formStoreProfile}) => {
                         <Input placeholder="Province" />
                     </Form.Item>
                     <Form.Item
+                        name="postalCode"
+                        rules={[
+                        {
+                            required: true,
+                            message: "Please input postalCode!",
+                            
+                        },
+                        ]}
+                    >
+                        <Input placeholder="Postal Code"  />
+                    </Form.Item>
+                    <Form.Item
                         name="primaryContact"
                         rules={[
                         {
@@ -82,7 +94,7 @@ const StoreProfile = ({submitStoreDetails,formStoreProfile}) => {
                         },
                         ]}
                     >
-                        <Input placeholder="Primary Contact"  />
+                        <Input type="number" placeholder="Primary Contact"  />
                     </Form.Item>
                         <Form.Item
                         name="secondaryContact"

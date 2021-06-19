@@ -75,9 +75,9 @@ const Register = ({history}) => {
         
         <div
           style={{
-            marginBottom: "20px",
-            fontWeight: "700",
-            color: "#6170f7",
+            marginBottom: "18px",
+            fontWeight: "800",
+            color: "black",
            textAlign:"center"
           }}
         >
@@ -162,7 +162,7 @@ const Register = ({history}) => {
             />{" "}
             &nbsp;{" "}
             <span style={{ fontSize: "12px", color: "#000" }}>
-              I agree with the terms & conditions
+              I agree with the terms and conditions
             </span>
           </Form.Item>
           <Form.Item>
@@ -179,9 +179,9 @@ const Register = ({history}) => {
             <br />
             <br />
             <p className="fontSmall">
-              Have an account ?&nbsp;
+              Already have an account ?&nbsp;
               <span>
-                <Link to="/login">Login</Link>
+                <Link to="/login"> <font color="rgb(60, 42, 90)">Login</font> </Link>
               </span>
             </p>
           </Form.Item>
