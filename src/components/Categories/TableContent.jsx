@@ -1,32 +1,36 @@
+import React,{useState} from 'react';
 import { Table, Badge, Menu, Dropdown, Space } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
+import { Link } from 'react-router-dom';
 
 
-const TableContent = () => {
+
+const TableContent = props => {
+  
+  const { data, onDelete } = props;
+
+
+
+
   
     const columns = [
+      
         { title: 'Name', dataIndex: 'name', key: 'name' },
-        { title: 'Platform', dataIndex: 'platform', key: 'platform' },
-        { title: 'Version', dataIndex: 'version', key: 'version' },
-        { title: 'Upgraded', dataIndex: 'upgradeNum', key: 'upgradeNum' },
+        { title: 'Description', dataIndex: 'description', key: 'description' },
+        { title: 'Rack No.', dataIndex: 'rackNo', key: 'rackNo' },
+        { title: 'From Date', dataIndex: 'createdAt', key: 'createdAt' },
+        { title: 'To Date', dataIndex: 'expiredAt', key: 'expiredAt' },
         { title: 'Creator', dataIndex: 'creator', key: 'creator' },
-        { title: 'Date', dataIndex: 'createdAt', key: 'createdAt' },
         { title: 'Action', key: 'operation', render: () => <a>Edit</a> },
-        { title: 'Action', key: 'operation1', render: () => <a>Delete</a> },
+        { title: 'Action', key: 'delete', render: category => (
+          <button
+            onClick={() => onDelete(category)}
+            className="btn btn-danger btn-sm">
+            Delete
+          </button> )},
       ];
 
-      const data = [];
-      for (let i = 0; i < 3; ++i) {
-        data.push({
-          key: i,
-          name: 'Screem',
-          platform: 'iOS',
-          version: '10.3.4.5654',
-          upgradeNum: 500,
-          creator: 'Jack',
-          createdAt: '2014-12-24 23:12:00',
-        });
-      }
+       
 
     return (
       <Table
