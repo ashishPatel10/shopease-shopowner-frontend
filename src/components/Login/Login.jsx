@@ -99,7 +99,7 @@ const Login = ({auth,history}) => {
             secondaryContact: values["secondaryContact"],
             fromDate: moment().format("YYYY-MM-DD"),
             thruDate: "2099-01-01",
-            creator: values["storeName"],
+            creator: JSON.parse(localStorage.getItem("userInfo")).username,
             created: moment().format("YYYY-MM-DD"),
             ownerId: JSON.parse(localStorage.getItem("userInfo")).ownerId
         })
