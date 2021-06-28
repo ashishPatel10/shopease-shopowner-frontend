@@ -33,15 +33,15 @@ const Dashboard = () => {
           <div className="logo" > {collapsed ? <h2>SS</h2> : <h2>ShopEASE</h2> }</div>
           <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
             <Menu.Item key="1" icon={<UserOutlined />}> 
-              nav 1
+              Profiles
             </Menu.Item>
             <Menu.Item key="2" icon={<VideoCameraOutlined />}> <NavLink to='/categories' activeStyle>
-            Category
+            Managing Categories
             </NavLink>
               
             </Menu.Item>
             <Menu.Item key="3" icon={<UploadOutlined />}>
-              nav 3
+              Managing Products
             </Menu.Item>
           </Menu>
         </Sider>

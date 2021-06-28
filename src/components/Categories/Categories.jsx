@@ -23,7 +23,10 @@ import { DownloadOutlined } from '@ant-design/icons';
         dataIndex: 'description',
         key: 'description',
       },
-    
+      { title: 'Rack No.', dataIndex: 'rackNo', key: 'rackNo' },
+      { title: 'From Date', dataIndex: 'createdAt', key: 'createdAt' },
+      { title: 'To Date', dataIndex: 'expiredAt', key: 'expiredAt' },
+      { title: 'Creator', dataIndex: 'creator', key: 'creator' },
         {
           title: '',
           key: 'action',
@@ -40,18 +43,30 @@ import { DownloadOutlined } from '@ant-design/icons';
     const [tableData, setTableData] = useState([
       {
         key: '1',
-        category:"category1",
-        description:"des 1"
+        category:"Health Care",
+        description:"It includes personal care , hair care, etc.",
+        rackNo: "1",
+        createdAt:'2020-12-24 23:12:00',
+        expiredAt:'2021-10-12 23:12:00',
+        creator:"Jack"
       },
       {
         key: '2',
-        category:"category2",
-        description:"des 2"
+        category:"Grocery",
+        description:"It includes rice, flour, etc.",
+        rackNo: "2",
+        createdAt:'2020-10-24 23:12:00',
+        expiredAt:'2021-09-12 23:12:00',
+        creator:"Liza"
       },
       {
         key: '3',
-        category:"category3",
-        description:"des 3"
+        category:"Food & Drink",
+        description:"It includes snack foods, candy, etc.",
+        rackNo: "3",
+        createdAt:'2020-06-06 23:12:00',
+        expiredAt:'2021-11-12 23:12:00',
+        creator:"Harry"
       },
     ])  ;
   
