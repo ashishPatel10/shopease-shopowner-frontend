@@ -13,10 +13,11 @@ import RestfulProvider from "../utils/RestfulProvider";
   const addStore = (data) => {
     return RestfulProvider.post("api/store/addStore/", data);
   };
-
+const addCategory 
   export {
       register,
       login,
       getUserStore,
       addStore,
+      addCategory
   };
