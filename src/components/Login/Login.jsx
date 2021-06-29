@@ -48,6 +48,7 @@ const Login = ({auth,history}) => {
                   ownerId:data.data.id,
                   username:data.data.username
                 });
+                auth.setCommonHeaders();
                 console.log(toJS(auth.userInfo));
                if(data.data.store_flag)
                {

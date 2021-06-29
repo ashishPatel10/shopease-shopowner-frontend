@@ -24,6 +24,7 @@ const StoreProfile = ({submitStoreDetails,formStoreProfile}) => {
                         ]}
                     >
                         <Input placeholder="Store Name"  />
+
                     </Form.Item>
                     <Form.Item
                         name="storeCode"

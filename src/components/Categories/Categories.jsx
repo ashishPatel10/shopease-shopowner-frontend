@@ -1,5 +1,5 @@
 import React,{useState,useReact, useEffect} from 'react';
-import { Card,Modal, Button,Form,Input,InputNumber,Table, Tag, Space,Popconfirm, DatePicker, Typography } from 'antd';
+import { Card,Modal, Button,Form,Input,InputNumber,Table, Tag, Space,Popconfirm, DatePicker, Typography, message } from 'antd';
 import { Link } from "react-router-dom";
 import {
   DownloadOutlined,
@@ -7,19 +7,34 @@ import {
   DeleteOutlined,
   EditOutlined
   } from '@ant-design/icons';
-
+  import {
+    addCategory,
+    updateCategory,
+    getCategory,
+    deleteCategory
+  } from "./../../services/RequestService";
+import { values } from 'mobx';
+  
 
 const Categories = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [editCategoryVisible, setEditCategoryVisible] = useState(false);
     const [AddCategoryVisible, setAddCategoryVisible] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
-    const [formStore] = Form.useForm();
+    const [formEditCategory] = Form.useForm();
     const [sortedInfo, setSortedInfo] = useState({});  
     const [categoryInfo, setCategoryInfo] = useState("");
     const [createdAt, setCreatedAt] = useState("");
     const [expiredAt, setExpiredAt] = useState("");
-    const [tableData, setTableData] = useState([
+    const [formAddCategory] = Form.useForm();
+    const [tableData, setTableData] = useState([ {
+      key: '',
+      category:"",
+      description:"",
+      rackNo: 1,
+    dateCreated : ""
+    }]);
+    /* const [tableData, setTableData] = useState([
         {
           key: '1',
           category:"category1",
@@ -50,7 +65,7 @@ const Categories = () => {
     //       });
     //   };
 
-    
+    */
     const onFinish = (values) => {
       console.log(values);
     };
@@ -65,28 +80,56 @@ const Categories = () => {
             storeName : dummyData[0].storeName,
           }); */}
       };
-      const handleOk = () => {
+      const handleEditCategorySubmit = () => {
         // setIsModalVisible(false);
         setEditCategoryVisible(false);
       };
     
-      const handleCancel = () => {
+      const handleEditCategoryCancel = () => {
         // setIsModalVisible(false);
         setEditCategoryVisible(false);
       };
-      const handleCancel1 = () => {
+      const handleAddCategoryCancel = () => {
         setAddCategoryVisible(false);
       };
      
-      const handleOk1 = () => {
-        
-        /*removed time out function with loading
-        if(createdAt.getTime() > expiredAt.getTime())
-        {
-          setErrorMessage("Expire date should be later")
+      const handleAddCategorySubmit = () => {
+ /*removed time out function with loading     if(createdAt.getTime() > expiredAt.getTime()){  setErrorMessage("Expire date should be later")  }*/
+        formAddCategory
+        .validateFields()  
+        .then((values) =>{
+            addCategory({
+            storeId: +localStorage.getItem("storeIdCount"),
+            // storeRefId: "1",             not sure if this is needed
+            category: values["category"],
+            description: values["description"],
+            createdAt: values["createdAt"],    
+            expiredAt: values["expiredAt"],
+            creator: values["creator"]
+            })
+            .then((data) => {
+              console.log(data);
+              setAddCategoryVisible(1)
+              if (data.type !== "error")  {
+               // error(unexeceted use of history) history.push("/categories")
+                message.success("Category added successfully!!")
+                setAddCategoryVisible(false);
+              }
+              formAddCategory.resetFields();
+            })
+            .catch((error) => {
+              //loaderchange not implemented, check if required
+              console.log(error.response)
+              if (error) {
+                message.error(error.response.data.detail);
+              }
+            })
 
-        }*/
-          setAddCategoryVisible(false);
+
+        })
+        
+        
+
       };
     
      const handleChange = (pagination, filters, sorter) => {
@@ -136,6 +179,12 @@ const Categories = () => {
           key: 'rackNo',
           
         },  
+      {
+          title: 'Created date',
+          dataIndex: 'createdAt',
+          key: 'createdAt',
+          
+        },  
       
         {
           title: '',
@@ -171,57 +220,51 @@ const Categories = () => {
         <>
 
 <Button  type="primary" onClick={showAddCategoryModal} >
-            ADD CATEGORY
+            ADD CATEGORY 
         </Button>
 
         <Modal title="Add New Category"
         visible={AddCategoryVisible}
-          onCancel={handleCancel1}
+          onCancel={handleAddCategoryCancel}
           footer={
             [
-            <Button key="back" onClick={handleCancel1}>
+            <Button key="back" onClick={handleAddCategoryCancel}>
               Cancel
             </Button>,
-            
-            <Button key="submit" type="primary submit" onClick={handleOk1}>
+             <Button key="submit" type="primary submit" onClick={handleAddCategorySubmit}>
               Submit
             </Button>
             ]
           }
           >
-        
-
-
-          <Form  name="nest-messages" onFinish={onFinish}  validateMessages={validateMessages}>
+          <Form  name="formAddCategory" onFinish={onFinish}  validateMessages={validateMessages}>
             <Form.Item
-              name='category'
-              id='category'
-              
-              label="Category"
-              
+              name="category" label="Category"
               rules={[
                 {
                   required: true,
+                  message: "Please input Category name!",
                 },
               ]}
             >
               <Input />
             </Form.Item>
-            <Form.Item name='description'id='description' label="Description" >
+            <Form.Item name="description"  label="Description">
               <Input.TextArea />
             </Form.Item>
-            <Form.Item name={['user', 'rackNo']} label="Rack No" rules={[{ type: 'number', min: 0, max: 99 }]}>
+            <Form.Item name="rackNo" label="Rack No" rules={[{ type: 'number', min: 0, max: 99 }]}>
             <InputNumber />
             </Form.Item>
 
-           <Form.Item name={['user', 'createdAt']} type="date" label="Created At">
+          {/* <Form.Item name= "createdAt" type="date" label="Created At">
             <DatePicker 
             // selected={ this.state.createdAt }
               onChange={ handleChange }
               name="createdAt"
               dateFormat="MM/dd/yyyy" />
             </Form.Item>
-            <Form.Item name={['user', 'expiredAt']} type="date" label="Expired At">
+            */ }
+            <Form.Item name="expiredAt" type="date" label="Expired At">
             <DatePicker 
             //selected={ this.state.expiredAt }
               /*onChange={ this.handleChange }
@@ -231,7 +274,7 @@ const Categories = () => {
             dateFormat="MM/dd/yyyy" */
              />
             </Form.Item>
-            <Form.Item name={['user', 'creator']} label="Creator">
+            <Form.Item name="creator" label="Creator">
               <Input />
             </Form.Item>
             
@@ -242,17 +285,17 @@ const Categories = () => {
             <p>Card content</p>
             <p>Card content</p>
             <p>Card content</p>
-         </Card> */}
-         // give use state in place of tableData in datasource
+         </Card>  
+          give use state in place of tableData in datasource */}
          <Table columns={columns} dataSource={tableData} onChange={handleChange}/>
-         <Modal title="Edit Category" visible={editCategoryVisible}  onCancel={handleCancel} footer={[
+         <Modal title="Edit Category" visible={editCategoryVisible}  onCancel={handleEditCategoryCancel} footer={[
            
-            <Button key="submit" type="primary" onClick={handleOk}>
+            <Button key="submit" type="primary" onClick={handleEditCategorySubmit}>
               Submit
             </Button>,
             
           ]}>
-      <Form form={formStore} initialValues={{ size: "small" }}>
+      <Form form={formEditCategory} initialValues={{ size: "small" }}>
                     <Form.Item
               // how will the value get mapped ? should not there be uneditabel fields like date created?
                      //   dataIndex="category"

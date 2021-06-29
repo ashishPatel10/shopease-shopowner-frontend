@@ -25,7 +25,7 @@ class AuthStore {
   };
   setCommonHeaders = () => {
     axios.defaults.headers.common["Authorization"] = `Bearer ${
-      JSON.parse(localStorage.getItem("userInfo")).token
+      JSON.parse(localStorage.getItem("userInfo")).accessToken
     }`;
   };
 }
