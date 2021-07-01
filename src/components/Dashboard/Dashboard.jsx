@@ -14,7 +14,7 @@ import { Switch,Link,useLocation } from "react-router-dom";
 import PrivateRoute from "../../routes/privateRoutes";
 import Categories from "../Categories/Categories";
 import StoreProfile from "../StoreProfile/StoreProfile";
-
+import Order from "../Order/Order"
 
 
 
@@ -65,20 +65,26 @@ const Dashboard = () => {
             <Link to= "/dashboard">
             Dashboard
             </Link>
-             
-            </Menu.Item>
+             </Menu.Item>
+
             <Menu.Item key="/categories" icon={<InboxOutlined />}>
             <Link to= "/categories">
             Categories
             </Link>
-              
             </Menu.Item>
+
             <Menu.Item key="/products" icon={<HddOutlined />}>
             <Link to= "/products">
             Products
-            </Link>
-              
+            </Link>  
             </Menu.Item>
+
+            <Menu.Item key="/Order" icon={<HddOutlined />}>
+            <Link to= "/Order">
+            Orders
+            </Link>         
+            </Menu.Item>
+     
           </Menu>
         </Sider>
         <Layout className="site-layout">
@@ -139,7 +145,7 @@ const Dashboard = () => {
             <PrivateRoute exact={true} path="/categories" component={Categories} />
              {/* <PrivateRoute exact={true} path="/products" component={Products} /> */}
             <PrivateRoute exact={true} path="/profile" component={StoreProfile} />
-            
+            <PrivateRoute exact={true} path="/Order" component={Order} />
             
         </Switch>
           </Content>

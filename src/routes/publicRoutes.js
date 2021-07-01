@@ -4,6 +4,7 @@ import PrivateRoute from "./privateRoutes";
 import Login from "../components/Login/Login";
 import Register from "../components/Register/Register.jsx";
 import Dashboard from "../components/Dashboard/Dashboard"
+import Order from "../components/Order/Order";
 
 
 const Routes = (props) => (
@@ -18,6 +19,8 @@ const Routes = (props) => (
         path="/"
         component={Dashboard}
       />
+ <Route path="/order" exact component={Order} />
+
     </Switch>
   </Router>
 );

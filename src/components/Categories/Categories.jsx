@@ -57,14 +57,6 @@ const Categories = () => {
         dateCreated: "01/05/2021"
         },
       ])  ;
-    const dummyData = [{"storeName":"My store",}]
-    // const showModal = () => {
-    //     setIsModalVisible(true);
-    //     formStore.setFieldsValue({
-    //         storeName : dummyData[0].storeName,
-    //       });
-    //   };
-
     */
     const onFinish = (values) => {
       console.log(values);
