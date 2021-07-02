@@ -71,27 +71,19 @@ const Dashboard = () => {
           mode="inline"
           defaultSelectedKeys={[location.pathname]}
         >
-          <Menu.Item key="/dashboard" icon={<BarChartOutlined />}>
-            <Link to="/dashboard">Dashboard</Link>
-          </Menu.Item>
-          <Menu.Item key="/categories" icon={<InboxOutlined />}>
-            <Link to="/categories">Categories</Link>
-          </Menu.Item>
-          <Menu.Item key="/products" icon={<HddOutlined />}>
-            <Link to="/products">Products</Link>
-          </Menu.Item>
-        </Menu>
-
-
-            <Menu.Item key="/Order" icon={<HddOutlined />}>
-            <Link to= "/Order">
-            Orders
-            </Link>         
+            <Menu.Item key="/dashboard" icon={<BarChartOutlined />}>
+              <Link to="/dashboard">Dashboard</Link>
             </Menu.Item>
-     
+            <Menu.Item key="/categories" icon={<InboxOutlined />}>
+              <Link to="/categories">Categories</Link>
+            </Menu.Item>
+            <Menu.Item key="/products" icon={<HddOutlined />}>
+              <Link to="/products">Products</Link>
+            </Menu.Item>
+            <Menu.Item key="/Order" icon={<HddOutlined />}>
+            <Link to= "/Order">Orders </Link>         
+            </Menu.Item>
           </Menu>
-       
-
       </Sider>
       <Layout className="site-layout">
         <Header className="site-layout-background" style={{ padding: 0 }}>
@@ -134,7 +126,7 @@ const Dashboard = () => {
             <PrivateRoute exact={true} path="/categories" component={Categories} />
              <PrivateRoute exact={true} path="/products" component={Products} /> 
             <PrivateRoute exact={true} path="/profile" component={StoreProfile} />
-            <PrivateRoute exact={true} path="/Order" component={Order} />
+            <PrivateRoute exact={true} path="/order" component={Order} />
             
         </Switch>
           </Content>
