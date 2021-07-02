@@ -31,6 +31,19 @@ import RestfulProvider from "../utils/RestfulProvider";
 };
 
  
+
+  const addProduct = (data) => {
+    return RestfulProvider.post("api/product/addProduct/", data);
+  }; 
+  const updateProduct = (data) => {
+    return RestfulProvider.put("api/product/updateProduct", data);
+  }; 
+  const getProduct = (id) =>{
+    return RestfulProvider.get("api/product/getProduct"+id);
+  };
+ const deleteProduct = (data) =>{
+    return RestfulProvider.delete("api/product/deleteProduct");
+ };
   export {
       register,
       login,
@@ -40,5 +53,10 @@ import RestfulProvider from "../utils/RestfulProvider";
       getCategory,
       updateCategory,
       getCategoryByStoreId,
-      deleteCategory
+      deleteCategory,
+  
+      addProduct,
+      updateProduct,
+      getProduct,
+      deleteProduct
   };

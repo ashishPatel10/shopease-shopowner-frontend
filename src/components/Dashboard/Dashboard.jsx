@@ -13,6 +13,7 @@ import { Switch,Link,useLocation } from "react-router-dom";
 
 import PrivateRoute from "../../routes/privateRoutes";
 import Categories from "../Categories/Categories";
+import Products from "../Products/Products";
 import StoreProfile from "../StoreProfile/StoreProfile";
 import Order from "../Order/Order"
 
@@ -143,7 +144,7 @@ const Dashboard = () => {
           >
            <Switch>
             <PrivateRoute exact={true} path="/categories" component={Categories} />
-             {/* <PrivateRoute exact={true} path="/products" component={Products} /> */}
+             <PrivateRoute exact={true} path="/products" component={Products} /> 
             <PrivateRoute exact={true} path="/profile" component={StoreProfile} />
             <PrivateRoute exact={true} path="/Order" component={Order} />
             
