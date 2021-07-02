@@ -20,13 +20,16 @@ import RestfulProvider from "../utils/RestfulProvider";
   const updateCategory = (data) => {
     return RestfulProvider.put("api/category/updateCategory", data);
   }; 
-  const getCategory = (id) =>{
-    return RestfulProvider.get("api/category/getCategory"+id);
+  const getCategoryByStoreId = (id) =>{
+    return RestfulProvider.get("api/category/getCategoryByStoreId/"+id);
   };
- const deleteCategory = (data) =>{
-    return RestfulProvider.delete("api/category/deleteCategory");
+ const deleteCategory = (id) =>{
+    return RestfulProvider.delete("api/category/deleteCategory/"+id);
  };
- 
+ const getCategory = () =>{
+  return RestfulProvider.get("api/category/getCategory");
+};
+
  
   export {
       register,
@@ -34,7 +37,8 @@ import RestfulProvider from "../utils/RestfulProvider";
       getUserStore,
       addStore,
       addCategory,
-      updateCategory,
       getCategory,
+      updateCategory,
+      getCategoryByStoreId,
       deleteCategory
   };

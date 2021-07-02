@@ -10,6 +10,7 @@ import {
   import {
     addCategory,
     updateCategory,
+    getCategoryByStoreId,
     getCategory,
     deleteCategory
   } from "./../../services/RequestService";
@@ -27,6 +28,7 @@ const Categories = () => {
     const [createdAt, setCreatedAt] = useState("");
     const [expiredAt, setExpiredAt] = useState("");
     const [formAddCategory] = Form.useForm();
+    const [category,setCategory] = useState([]);
     const [tableData, setTableData] = useState([ {
       key: '',
       category:"",
@@ -116,8 +118,6 @@ const Categories = () => {
                 message.error(error.response.data.detail);
               }
             })
-
-
         })
         
         
@@ -143,11 +143,11 @@ const Categories = () => {
       const columns = [
         {
             title: 'Category',
-            dataIndex: 'category',
-            key: 'category',
+            dataIndex: 'category_name',
+            key: 'category_name',
             
-            sorter: (a, b) => a.category.localeCompare(b.category),
-            sortOrder: sortedInfo.columnKey === 'category' && sortedInfo.order,
+            sorter: (a, b) => a.category_name.localeCompare(b.category_name),
+            sortOrder: sortedInfo.columnKey === 'category_name' && sortedInfo.order,
             ellipsis: true,
           },
          
@@ -167,14 +167,8 @@ const Categories = () => {
 
         {
           title: 'Rack No.',
-          dataIndex: 'rackNo',
-          key: 'rackNo',
-          
-        },  
-      {
-          title: 'Created date',
-          dataIndex: 'createdAt',
-          key: 'createdAt',
+          dataIndex: 'rackNumber',
+          key: 'rackNumber',
           
         },  
       
@@ -194,7 +188,7 @@ const Categories = () => {
             key: 'action',
            width:80,
             render: (text, record) => (
-                <Popconfirm title="Sure to delete?"  onConfirm={() => handleDelete(record.key)}>
+                <Popconfirm title="Sure to delete?"  onConfirm={() => handleDelete(record.categoryId)}>
                 <DeleteOutlined style={{color:"red"}}/>
               </Popconfirm>
             ),
@@ -204,10 +198,30 @@ const Categories = () => {
     
       const handleDelete = (key) => {
        console.log(key);
+        deleteCategory(key);
+        
+
        let newFilteredData = tableData.filter((record) => record.key != key);
        
       setTableData(newFilteredData);
       };
+      useEffect(() => {
+    
+        getCategory()
+        .then((data) => {
+          console.log(data);
+          setCategory(
+            data
+          )
+          })
+        .catch((error) => {
+          console.log(error.response)
+          if (error) {
+            message.error(error.response.data.email);
+          }
+        });
+      
+    }, []); 
     return ( 
         <>
 
@@ -244,7 +258,7 @@ const Categories = () => {
             <Form.Item name="description"  label="Description">
               <Input.TextArea />
             </Form.Item>
-            <Form.Item name="rackNo" label="Rack No" rules={[{ type: 'number', min: 0, max: 99 }]}>
+            <Form.Item name="RackNo" label="Rack No" rules={[{ type: 'number', min: 0, max: 99 }]}>
             <InputNumber />
             </Form.Item>
 
@@ -279,9 +293,9 @@ const Categories = () => {
             <p>Card content</p>
          </Card>  
           give use state in place of tableData in datasource */}
-         <Table columns={columns} dataSource={tableData} onChange={handleChange}/>
+         <Table columns={columns} dataSource={category} onChange={handleChange}/>
          <Modal title="Edit Category" visible={editCategoryVisible}  onCancel={handleEditCategoryCancel} footer={[
-           
+
             <Button key="submit" type="primary" onClick={handleEditCategorySubmit}>
               Submit
             </Button>,

@@ -19,7 +19,7 @@ const Routes = (props) => (
         path="/"
         component={Dashboard}
       />
- <Route path="/order" exact component={Order} />
+ <PrivateRoute path="/order" exact component={Order} />
 
     </Switch>
   </Router>
