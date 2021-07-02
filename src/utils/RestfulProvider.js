@@ -77,6 +77,19 @@ class RestfulProvider {
         });
     });
   };
+  patch = (url, data) => {
+    // this.setCommonHeaders();
+    return new Promise((resolve, reject) => {
+      axios
+        .patch(`${endpoint}/${url}`, data)
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  };
 }
 
 export default new RestfulProvider();

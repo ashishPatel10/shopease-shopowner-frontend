@@ -38,7 +38,8 @@ const Register = ({history}) => {
           register({
             email: values["email"],
             username: values["username"],
-
+            firstname:values["firstname"],
+            lastname: values["lastname"],
             password: values["password"],
           })
             .then((data) => {
@@ -94,9 +95,32 @@ const Register = ({history}) => {
               },
             ]}
           >
+            <Input placeholder="First Name" prefix={<UserOutlined />} />
+          </Form.Item>
+          <Form.Item
+            name="firstname"
+            rules={[
+              {
+                required: true,
+                message: "Please input your firstname!",
+                whitespace: true,
+              },
+            ]}
+          >
+            <Input placeholder="Last Name" prefix={<UserOutlined />} />
+          </Form.Item>
+          <Form.Item
+            name="lastname"
+            rules={[
+              {
+                required: true,
+                message: "Please input your lastname!",
+                whitespace: true,
+              },
+            ]}
+          >
             <Input placeholder="Name" prefix={<UserOutlined />} />
           </Form.Item>
-
           <Form.Item
             name="email"
             rules={[

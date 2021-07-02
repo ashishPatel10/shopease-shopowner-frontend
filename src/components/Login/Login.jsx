@@ -24,7 +24,7 @@ const Login = ({auth,history}) => {
     let [showLoader, showLoaderChange] = useState(0);
     let [showStoreForm, setShowStoreForm] = useState(0);
     const loginUser = () => {
-      localStorage.setItem("storeIdCount", +localStorage.getItem("storeIdCount")+1);
+      
       console.log(toJS(auth.userInfo));
       showLoaderChange(1);
         formLogin
@@ -87,8 +87,7 @@ const Login = ({auth,history}) => {
         .then((values) => {
             console.log(values);
           addStore({
-            storeId: +localStorage.getItem("storeIdCount"),
-            storeRefId: "1",
+           
             storeName: values["storeName"],
             storeCode: values["storeCode"],
             streetName: values["streetName"],
@@ -184,6 +183,11 @@ const Login = ({auth,history}) => {
                     Dont't have an account ?&nbsp;
                     <span>
                       <Link to="/register"><font color="rgb(60, 42, 90)">Register</font></Link>
+                    </span>
+                    <br />
+                    <br />
+                    <span>
+                      <Link to="/password-reset-email"><font color="rgb(60, 42, 90)">Forgot Password</font></Link>
                     </span>
                   </p>
                 </Form.Item>
