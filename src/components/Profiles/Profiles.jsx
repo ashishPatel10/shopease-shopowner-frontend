@@ -2,13 +2,13 @@ import React, { useState, useReact } from "react";
 import { Tabs } from "antd";
 import { Card, Modal, Button } from "antd";
 import { Row, Col, Form, Input, message, Popover } from "antd";
-import { Image } from "antd";
 
 const { TabPane } = Tabs;
 
 const Profiles = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isUserModalVisible, setIsUserModalVisible] = useState(false);
+
   const [formStoreProfile] = Form.useForm();
   const [formUserProfile] = Form.useForm();
   const submitUserDetails = () => {};
