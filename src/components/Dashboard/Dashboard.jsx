@@ -13,8 +13,16 @@ import { Switch, Link, useLocation } from "react-router-dom";
 
 import PrivateRoute from "../../routes/privateRoutes";
 import Categories from "../Categories/Categories";
+import Products from "../Products/Products";
 import StoreProfile from "../StoreProfile/StoreProfile";
+
+import Order from "../Order/Order"
+
+
+
+
 import Profiles from "../Profiles/Profiles";
+
 
 const { Header, Sider, Content } = Layout;
 
@@ -73,9 +81,21 @@ const Dashboard = () => {
             <Link to="/products">Products</Link>
           </Menu.Item>
         </Menu>
+
+
+            <Menu.Item key="/Order" icon={<HddOutlined />}>
+            <Link to= "/Order">
+            Orders
+            </Link>         
+            </Menu.Item>
+     
+          </Menu>
+       
+
       </Sider>
       <Layout className="site-layout">
         <Header className="site-layout-background" style={{ padding: 0 }}>
+
           <Row>
             <Col xs={2} sm={2} md={2} lg={2} xl={2} xxl={2}>
               {React.createElement(
@@ -99,28 +119,28 @@ const Dashboard = () => {
             </Col>
             <Col xs={2} sm={2}></Col>
           </Row>
-        </Header>
-        <Content
-          className="site-layout-background"
-          style={{
-            margin: "24px 16px",
-            padding: 24,
-            height: "100vh",
-          }}
-        >
-          <Switch>
-            <PrivateRoute
-              exact={true}
-              path="/categories"
-              component={Categories}
-            />
-            {/* <PrivateRoute exact={true} path="/products" component={Products} /> */}
-            <PrivateRoute exact={true} path="/profile" component={Profiles} />
-          </Switch>
-        </Content>
-      </Layout>
-    </Layout>
-  );
-};
 
+           
+          </Header>
+          <Content
+            className="site-layout-background"
+            style={{
+              margin: '24px 16px',
+              padding: 24,
+              height: "100vh",
+            }}
+          >
+           <Switch>
+            <PrivateRoute exact={true} path="/categories" component={Categories} />
+             <PrivateRoute exact={true} path="/products" component={Products} /> 
+            <PrivateRoute exact={true} path="/profile" component={StoreProfile} />
+            <PrivateRoute exact={true} path="/Order" component={Order} />
+            
+        </Switch>
+          </Content>
+        </Layout>
+      </Layout> );
+}
+ 
 export default Dashboard;
+

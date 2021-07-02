@@ -4,9 +4,11 @@ import PrivateRoute from "./privateRoutes";
 import Login from "../components/Login/Login";
 import Register from "../components/Register/Register.jsx";
 import Dashboard from "../components/Dashboard/Dashboard"
+
 import VerifyEmail from "../components/VerifyEmail/VerifyEmail";
 import EnterEmail from "../components/ResetPassword/EnterEmail";
 import ResetPassword from "../components/ResetPassword/ResetPassword";
+
 const Routes = (props) => (
   <Router>
     <Switch>
@@ -22,6 +24,8 @@ const Routes = (props) => (
         path="/"
         component={Dashboard}
       />
+
+
     </Switch>
   </Router>
 );

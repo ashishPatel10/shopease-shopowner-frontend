@@ -31,14 +31,14 @@ const Login = ({auth,history}) => {
         .validateFields()
         .then((values) => {
             console.log(values);
-            
+         //API below   
           login({
             email: values["email"],
             password: values["password"],
           })
             .then((data) => {
                console.log(data);
-                
+              // set state   
               if (data.type !== "error") {
                 showLoaderChange(0);
                 auth.setUserInfo({
@@ -48,6 +48,7 @@ const Login = ({auth,history}) => {
                   ownerId:data.data.id,
                   username:data.data.username
                 });
+                auth.setCommonHeaders();
                 console.log(toJS(auth.userInfo));
                if(data.data.store_flag)
                {
@@ -58,7 +59,7 @@ const Login = ({auth,history}) => {
                   console.log(response);
                 }).catch((error) => {
                   setShowStoreForm(1)
-                  console.log(error.response)
+                  // console.log(error.response)
                   message.info("please enter your store details");
                 });
                 
