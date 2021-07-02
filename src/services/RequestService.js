@@ -23,6 +23,7 @@ import RestfulProvider from "../utils/RestfulProvider";
   const getCategoryByStoreId = (id) =>{
     return RestfulProvider.get("api/category/getCategoryByStoreId/"+id);
   };
+
  const deleteCategory = (id) =>{
     return RestfulProvider.delete("api/category/deleteCategory/"+id);
  };
@@ -44,11 +45,26 @@ import RestfulProvider from "../utils/RestfulProvider";
  const deleteProduct = (data) =>{
     return RestfulProvider.delete("api/product/deleteProduct");
  };
+
+  const verifyEmail = (token) => {
+    return RestfulProvider.get("api/email-verify/?token="+token);
+  };
+const requestResetEmail = (data) =>{
+  return RestfulProvider.post("api/request-reset-email/",data)
+}
+const passwordResetTokenCheck = (uidb,token) =>{
+  return RestfulProvider.get("api/password-reset/"+uidb+"/"+token)
+}
+const passwordResetComplete = (data) =>{
+  return RestfulProvider.patch("api/password-reset-complete/",data)
+}
+
   export {
       register,
       login,
       getUserStore,
       addStore,
+
       addCategory,
       getCategory,
       updateCategory,
@@ -58,5 +74,12 @@ import RestfulProvider from "../utils/RestfulProvider";
       addProduct,
       updateProduct,
       getProduct,
-      deleteProduct
+      deleteProduct,
+
+
+      verifyEmail,
+      requestResetEmail,
+      passwordResetTokenCheck,
+      passwordResetComplete
   };
+
