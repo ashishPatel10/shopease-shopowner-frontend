@@ -1,25 +1,83 @@
-import React, { useState, useReact } from "react";
+import React, { useState, useEffect } from "react";
 import { Tabs } from "antd";
 import { Card, Modal, Button } from "antd";
 import { Row, Col, Form, Input, message, Popover } from "antd";
+import {
+  getOwnerByEmail,
+  updateStore,
+  getUserStore
+} from "./../../services/RequestService";
+import moment from "moment";
+import { inject } from "mobx-react";
+import { Link,withRouter } from "react-router-dom";
+
 
 const { TabPane } = Tabs;
 
-const Profiles = () => {
+const Profiles = ({auth}) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isUserModalVisible, setIsUserModalVisible] = useState(false);
 
   const [formStoreProfile] = Form.useForm();
   const [formUserProfile] = Form.useForm();
   const submitUserDetails = () => {};
-  const submitStoreDetails = () => {};
+  const submitStoreDetails = () => {
+    formStoreProfile
+        .validateFields()  
+        .then((values) =>{
+          console.log(values);
+          updateStore(
+            {
+              
+            storeId: values["storeId"] ,
+            storeRefId:JSON.parse(localStorage.getItem("ownerInfo")).store.storeRefId,
+            storeName: values["storeName"],
+            streetName: values["streetName"],
+            postalcode: values["postalcode"],
+            city: values["city"],
+            province: values["province"],
+            primaryContact: values["primaryContact"],
+            secondaryContact: values["secondaryContact"],
+            modifier: JSON.parse(localStorage.getItem("userInfo")).username,
+            modified: moment().format("YYYY-MM-DD"),
+            
+            })
+            .then((data) => {
+              console.log(data);
+              
+              if (data.type !== "error")  {
+                message.success("Store details updated successfully!!")
+              }
+              formStoreProfile.resetFields();
+              getUserStore(data.data.id).then((response)=>{
+                console.log(response);
+                auth.setOwnerInfo({
+                  store:response
+                });
+              })
+            })
+            .catch((error) => {
+              
+              console.log(error.response)
+              if (error) {
+                message.error(error.response.data.detail);
+              }
+            })
+        })
+  };
   //const dummyData = [{ storeName: "My store" }];
   const showModal = () => {
     setIsModalVisible(true);
 
-    //  formStoreProfile.setFieldsValue({
-    //    storeName: dummyData[0].storeName,
-    //  });
+     formStoreProfile.setFieldsValue({
+      storeName:JSON.parse(localStorage.getItem("ownerInfo")).store.storeName,
+      streetName:JSON.parse(localStorage.getItem("ownerInfo")).store.streetName,
+      postalcode:JSON.parse(localStorage.getItem("ownerInfo")).store.postalcode,
+      city:JSON.parse(localStorage.getItem("ownerInfo")).store.city,
+      province:JSON.parse(localStorage.getItem("ownerInfo")).store.province,
+      primaryContact:JSON.parse(localStorage.getItem("ownerInfo")).store.primaryContact,
+      secondaryContact:JSON.parse(localStorage.getItem("ownerInfo")).store.secondaryContact
+     });
   };
   const showUserModal = () => {
     setIsUserModalVisible(true);
@@ -37,7 +95,22 @@ const Profiles = () => {
     setIsModalVisible(false);
     setIsUserModalVisible(false);
   };
-
+  const getOwner= () => {
+    console.log(JSON.parse(localStorage.getItem("userInfo")).email);
+        getOwnerByEmail(JSON.parse(localStorage.getItem("userInfo")).email).then((data) => {
+          console.log(data);
+          localStorage.setItem("owner", JSON.stringify(data));
+          })
+        .catch((error) => {
+          console.log(error.response)
+          if (error) {
+            message.error(error.response);
+          }
+        });
+  }
+  useEffect(() => {
+   getOwner()
+}, []); 
   return (
     <div className="card-container">
       <Tabs type="card">
@@ -46,18 +119,18 @@ const Profiles = () => {
             <>
               <Card
                 title="Sam Smith"
-                extra={
-                  <Button type="primary" onClick={showUserModal}>
-                    Edit
-                  </Button>
-                }
+                // extra={
+                //   <Button type="primary" onClick={showUserModal}>
+                //     Edit
+                //   </Button>
+                // }
                 style={{ width: 300 }}
               >
-                <p>User Name : sam14 </p>
-                <p> First Name : Sam </p>
-                <p> Last Name : Smith </p>
-                <p> Email ID : sam1421@gmail.com </p>
-                <p> Phone Number: (604) 555-5555 </p>
+                <p>User Name : {JSON.parse(localStorage.getItem("owner")) != null ? JSON.parse(localStorage.getItem("owner")).username : ""}</p>
+                <p> First Name : {JSON.parse(localStorage.getItem("owner")) != null ?JSON.parse(localStorage.getItem("owner")).firstname: ""} </p>
+                <p> Last Name : {JSON.parse(localStorage.getItem("owner")) != null ?JSON.parse(localStorage.getItem("owner")).lastname: ""} </p>
+                <p> Email ID : {JSON.parse(localStorage.getItem("owner")) != null ?JSON.parse(localStorage.getItem("owner")).email: ""}</p>
+                
               </Card>
 
               <Modal
@@ -157,13 +230,13 @@ const Profiles = () => {
                 }
                 style={{ width: 300 }}
               >
-                <p>Store Name: Daily Essentials Store</p>
-                <p>Street Name: 7654 Tecumseh Road East </p>
-                <p>Postal Code: N8T 1E9 </p>
-                <p>City : Windsor</p>
-                <p>Province: Ontario (ON)</p>
-                <p>Primary Contact(Owner): (604) 555-5555 </p>
-                <p>Secondary Contact : (604) 432-786 </p>
+                <p>Store Name: {JSON.parse(localStorage.getItem("ownerInfo")).store.storeName}</p>
+                <p>Street Name: {JSON.parse(localStorage.getItem("ownerInfo")).store.streetName} </p>
+                <p>Postal Code: {JSON.parse(localStorage.getItem("ownerInfo")).store.postalcode}</p>
+                <p>City : {JSON.parse(localStorage.getItem("ownerInfo")).store.city}</p>
+                <p>Province: {JSON.parse(localStorage.getItem("ownerInfo")).store.province}</p>
+                <p>Primary Contact(Owner): {JSON.parse(localStorage.getItem("ownerInfo")).store.primaryContact} </p>
+                <p>Secondary Contact : {JSON.parse(localStorage.getItem("ownerInfo")).store.secondaryContact} </p>
               </Card>
 
               <Modal
@@ -200,7 +273,7 @@ const Profiles = () => {
                       <Input placeholder="Street Name" />
                     </Form.Item>
                     <Form.Item
-                      name="postalCode"
+                      name="postalcode"
                       rules={[
                         {
                           required: true,
@@ -280,4 +353,6 @@ const Profiles = () => {
   );
 };
 
-export default Profiles;
+export default inject(
+  "auth",
+ )(withRouter(Profiles));

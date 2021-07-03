@@ -11,6 +11,7 @@ import {
 import "./Dashboard.scss";
 import { Switch, Link, useLocation } from "react-router-dom";
 
+
 import PrivateRoute from "../../routes/privateRoutes";
 import Categories from "../Categories/Categories";
 import Products from "../Products/Products";
@@ -22,6 +23,7 @@ import Order from "../Order/Order"
 
 
 import Profiles from "../Profiles/Profiles";
+import { logout } from "../../services/RequestService";
 
 
 const { Header, Sider, Content } = Layout;
@@ -48,9 +50,17 @@ const Dashboard = () => {
       <Menu.Divider />
       <Menu.Item key="1">
         <a
-          href="/login"
+         href="/login"
           onClick={() => {
-            localStorage.removeItem("userInfo");
+            console.log(JSON.parse(localStorage.getItem("userInfo")).refreshToken);
+           logout({refresh:JSON.parse(localStorage.getItem("userInfo")).refreshToken})
+           .then((data)=>{
+            console.log(data);
+            
+           })
+           localStorage.removeItem("userInfo");
+           localStorage.removeItem("ownerInfo");
+           localStorage.removeItem("owner");
           }}
         >
           Logout
@@ -98,17 +108,21 @@ const Dashboard = () => {
                 }
               )}
             </Col>
-            <Col xs={17} sm={19} md={19} lg={20} xl={20} xxl={20}></Col>
-
+            <Col xs={11} sm={13} md={13} lg={19} xl={19} xxl={19}></Col>
+               
             <Col xs={3} sm={3} md={3} lg={1} xl={1} xxl={1}>
               <Dropdown overlay={menuConfig} trigger={["click"]}>
+               
                 <Avatar
                   size="medium"
                   icon={<UserOutlined />}
                   onClick={(e) => e.preventDefault()}
-                />
-              </Dropdown>
+                /> 
+              </Dropdown> 
             </Col>
+            <Col  xs={6} sm={6} md={6} lg={1} xl={1} xxl={1}>
+                <span>{JSON.parse(localStorage.getItem("userInfo")).username}</span>
+                </Col>
             <Col xs={2} sm={2}></Col>
           </Row>
 
@@ -125,7 +139,7 @@ const Dashboard = () => {
            <Switch>
             <PrivateRoute exact={true} path="/categories" component={Categories} />
              <PrivateRoute exact={true} path="/products" component={Products} /> 
-            <PrivateRoute exact={true} path="/profile" component={StoreProfile} />
+            <PrivateRoute exact={true} path="/profile" component={Profiles} />
             <PrivateRoute exact={true} path="/order" component={Order} />
             
         </Switch>

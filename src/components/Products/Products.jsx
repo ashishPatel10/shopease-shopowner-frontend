@@ -1,5 +1,5 @@
 import React,{useState,useReact, useEffect} from 'react';
-import { Card,Modal, Button,Form,Input,InputNumber,Table, Tag, Space,Popconfirm, DatePicker, Typography, message } from 'antd';
+import { Card,Modal, Button,Form,Input,InputNumber,Table, Tag, Space,Popconfirm, Select, message } from 'antd';
 import { Link } from "react-router-dom";
 import {
   DownloadOutlined,
@@ -11,22 +11,24 @@ import {
     addProduct,
     updateProduct,
     getProduct,
-    deleteProduct
+    deleteProduct,
+    getCategory,
+    getCategoryByStoreId,
+    getProductByStoreId
   } from "./../../services/RequestService";
+  import moment from "moment";
 
-  import { values } from 'mobx';
-
+  const { Option } = Select;
   const Products = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [editProductVisible, setEditProductVisible] = useState(false);
     const [AddProductVisible, setAddProductVisible] = useState(false);
-    const [errorMessage, setErrorMessage] = useState("");
+    const [products, setProducts] = useState([]);
     const [formEditProduct] = Form.useForm();
     const [sortedInfo, setSortedInfo] = useState({});  
-    const [categoryInfo, setCategoryInfo] = useState("");
-    const [createdAt, setCreatedAt] = useState("");
-    const [expiredAt, setExpiredAt] = useState("");
+    const [categoriesDropdown, setCategoriesDropdown] = useState([])
     const [formAddProduct] = Form.useForm();
+    const [editRecord, setEditRecord] = useState(null);
     const [tableData, setTableData] = useState([ {
       key: '',
       category:"",
@@ -34,39 +36,6 @@ import {
       rackNo: 1,
     dateCreated : ""
     }]);
-
-    /* const [tableData, setTableData] = useState([
-        {
-          key: '1',
-          category:"category1",
-          description:"des 1",
-          rackNo: 1,
-        dateCreated : "12/06/2021"
-        },
-        {
-          key: '2',
-          category:"category2",
-          description:"des 1",
-          rackNo: 4,
-        dateCreated: "01/05/2021"
-        },
-        {
-          key: '3',
-          category:"category3",
-          description:"des 3",
-          rackNo: 2,
-        dateCreated: "01/05/2021"
-        },
-      ])  ;
-    const dummyData = [{"storeName":"My store",}]
-    // const showModal = () => {
-    //     setIsModalVisible(true);
-    //     formStore.setFieldsValue({
-    //         storeName : dummyData[0].storeName,
-    //       });
-    //   };
-
-    */
 
     const onFinish = (values) => {
         console.log(values);
@@ -76,16 +45,60 @@ import {
         setAddProductVisible(true);
     };
 
-    const showEditProductModal = () => {
-
+    const showEditProductModal = (record) => {
+      console.log(record);
         setEditProductVisible(true);
-        {/*formStore.setFieldsValue({
-            storeName : dummyData[0].storeName,
-          }); */}
+       setEditRecord(record)
+        formEditProduct.setFieldsValue({
+          
+          category:record.categoryId,
+          product_name: record.product_name,
+          description: record.description,
+          quantity:record.quantity,
+          price:record.price,
+          discount:record.discount,
+          company:record.company,
+          }); 
       };
       const handleEditProductSubmit = () => {
-        // setIsModalVisible(false);
-        setEditProductVisible(false);
+        formEditProduct
+        .validateFields()  
+        .then((values) =>{
+          console.log(values);
+            updateProduct({
+              storeId:  JSON.parse(localStorage.getItem("ownerInfo")).store.storeId,
+              categoryId:values["category"],
+              product_name: values["product_name"],
+              description: values["description"],
+              quantity:values["quantity"],
+              price:values["price"],
+              discount:values["discount"],
+              company:values["company"],
+              modifier: JSON.parse(localStorage.getItem("userInfo")).username,
+              modified: moment().format("YYYY-MM-DD"),
+             productId:editRecord.productId
+            })
+            .then((data) => {
+              console.log(data);
+              setEditProductVisible(false);
+              if (data.type !== "error")  {
+                getProductFunction()
+                message.success("Product updated successfully!!")
+                setAddProductVisible(false);
+              }
+              formAddProduct.resetFields();
+            })
+            .catch((error) => {
+              //loaderchange not implemented, check if required
+              console.log(JSON.stringify(error.response.data))
+             
+                message.error(JSON.stringify(error.response.data.price));
+              
+            })
+
+
+        })
+       
       };
     
       const handleEditProductCancel = () => {
@@ -98,77 +111,86 @@ import {
      
       const handleAddProductSubmit = () => {
         /*removed time out function with loading     if(createdAt.getTime() > expiredAt.getTime()){  setErrorMessage("Expire date should be later")  }*/
-               formAddProduct
-               .validateFields()  
-               .then((values) =>{
-                   addProduct({
-                   storeId: +localStorage.getItem("storeIdCount"),
-                   // storeRefId: "1",             not sure if this is needed
-                   category: values["category"],
-                   description: values["description"],
-                   createdAt: values["createdAt"],    
-                   expiredAt: values["expiredAt"],
-                   creator: values["creator"]
-                   })
-                   .then((data) => {
-                     console.log(data);
-                     setAddProductVisible(1)
-                     if (data.type !== "error")  {
-                      // error(unexeceted use of history) history.push("/categories")
-                       message.success("Product added successfully!!")
-                       setAddProductVisible(false);
-                     }
-                     formAddProduct.resetFields();
-                   })
-                   .catch((error) => {
-                     //loaderchange not implemented, check if required
-                     console.log(error.response)
-                     if (error) {
-                       message.error(error.response.data.detail);
-                     }
-                   })
-       
-       
-               })
-               
-               
-       
-             };
-           
-            const handleChange = (pagination, filters, sorter) => {
-               console.log('Various parameters', pagination, filters, sorter);
-               setSortedInfo(sorter)
-             };
-
-             const validateMessages = {
-                required: '${label} is required!',
-                types: {
-                  email: '${label} is not a valid email!',
-                  number: '${label} is not a valid number!',
-                },
-                number: {
-                  range: '${label} must be between ${min} and ${max}',
-                },
-              };
+          formAddProduct
+          .validateFields()  
+          .then((values) =>{
+            console.log(values);
+              addProduct({
+                storeId:  JSON.parse(localStorage.getItem("ownerInfo")).store.storeId,
+                categoryId:values["category"],
+                product_name: values["product_name"],
+                description: values["description"],
+                quantity:values["quantity"],
+                price:values["price"],
+                discount:values["discount"],
+                company:values["company"],
+                creator: JSON.parse(localStorage.getItem("userInfo")).username,
+                created: moment().format("YYYY-MM-DD"),
+                fromDate: moment().format("YYYY-MM-DD"),
+              })
+              .then((data) => {
+                console.log(data);
+                setAddProductVisible(1)
+                if (data.type !== "error")  {
+                  getProductFunction()
+                  message.success("Product added successfully!!")
+                  setAddProductVisible(false);
+                }
+                formAddProduct.resetFields();
+              })
+              .catch((error) => {
+                //loaderchange not implemented, check if required
+                console.log(error.response)
+                if (error) {
+                  message.error((error.response.data.price[0]));
+                }
+              })
+  
+  
+          })
               
-              const columns = [
-                {
-                    title: 'Product',
-                    dataIndex: 'product',
-                    key: 'product',
-                    sorter: (a, b) => a.category.localeCompare(b.category),
-            sortOrder: sortedInfo.columnKey === 'category' && sortedInfo.order,
+              
+      
+            };
+          
+          const handleChange = (pagination, filters, sorter) => {
+              console.log('Various parameters', pagination, filters, sorter);
+              setSortedInfo(sorter)
+            };
+
+            const validateMessages = {
+              required: '${label} is required!',
+              types: {
+                email: '${label} is not a valid email!',
+                number: '${label} is not a valid number!',
+              },
+              number: {
+                range: '${label} must be between ${min} and ${max}',
+              },
+            };
+            
+        const columns = [
+        {
+            title: 'Product',
+            dataIndex: 'product_name',
+            key: 'product_name',
+            sorter: (a, b) => a.product_name.localeCompare(b.product_name),
+            sortOrder: sortedInfo.columnKey === 'product_name' && sortedInfo.order,
             ellipsis: true,
-          },
-         
-        // {
-        //   title: 'Category',
-        //   dataIndex: 'category',
-        //   key: 'category',
-        //   sorter: (a, b) => a.category.length - b.category.length,
-        //   sortOrder: sortedInfo.columnKey === 'category' && sortedInfo.category,
-        //   ellipsis: true,
-        // },
+        },
+        {
+          title: 'Category',
+          dataIndex: 'categoryId',
+          key: 'categoryId',
+          render: (text, record) => (
+            categoriesDropdown.map((category)=>{
+              return(
+                category.categoryId == record.categoryId ? category.category_name : ""
+              )
+             
+            })
+        ),
+        },
         {
           title: 'Description',
           dataIndex: 'description',
@@ -179,19 +201,19 @@ import {
           title: 'Quantity',
           dataIndex: 'quantity',
           key: 'quantity',
-          
+          width:90,
         },  
       {
           title: 'Price',
           dataIndex: 'price',
           key: 'price',
-          
+          width:80,
         }, 
         {
           title: 'Discount',
           dataIndex: 'discount',
           key: 'discount',
-          
+          width:90,
         },  
        
         {
@@ -206,21 +228,13 @@ import {
           key: 'ingredients',
           
         }, 
-       
-        {
-          title: 'Thru Date',
-          dataIndex: 'thruDate',
-          key: 'thruDate',
-          
-        }, 
-          
         {
             title: '',
             key: 'action',
             width:80,
             render: (text, record) => (
                 
-                <EditOutlined style={{color:"blue"}} onClick={showEditProductModal}/>
+                <EditOutlined style={{color:"blue"}} onClick={() => showEditProductModal(record)}/>
              
             ),
           },
@@ -230,7 +244,7 @@ import {
               key: 'action',
              width:80,
               render: (text, record) => (
-                  <Popconfirm title="Sure to delete?"  onConfirm={() => handleDelete(record.key)}>
+                  <Popconfirm title="Sure to delete?"  onConfirm={() => handleDelete(record.productId)}>
                   <DeleteOutlined style={{color:"red"}}/>
                 </Popconfirm>
               ),
@@ -240,15 +254,57 @@ import {
       
         const handleDelete = (key) => {
          console.log(key);
+         deleteProduct(key)
+        .then((data)=>{
+          console.log(data);
+          
+          getProductFunction()
+            message.success(data.message);
+          
+        })
          let newFilteredData = tableData.filter((record) => record.key != key);
 
          setTableData(newFilteredData);
       };
+      const getProductFunction = () => {
+        getProductByStoreId(JSON.parse(localStorage.getItem("ownerInfo")).store.storeId)
+        .then((data) => {
+          console.log(data);
+          setProducts(
+            data
+          )
+          })
+        .catch((error) => {
+          console.log(error.response)
+          if (error) {
+            message.error(error.response.data.message);
+          }
+        });
+      }
+      const getCategoryFunction = () => {
+        getCategoryByStoreId(JSON.parse(localStorage.getItem("ownerInfo")).store.storeId)
+        .then((data) => {
+          console.log(data);
+          setCategoriesDropdown(
+            data
+          )
+          })
+        .catch((error) => {
+          console.log(error.response)
+          if (error) {
+            // message.error(error.response.data.detail);
+          }
+        });
+      }
+      useEffect(() => {
+        getProductFunction()
+        getCategoryFunction()
+    }, []); 
     return ( 
         <>
 
-<Button  type="primary" onClick={showAddProductModal} >
-            ADD PRODUCT 
+        <Button  type="primary" onClick={showAddProductModal} >
+            Add Product
         </Button>
 
         <Modal title="Add New Product"
@@ -265,9 +321,9 @@ import {
             ]
           }
           >
-              <Form  name="formAddProduct" onFinish={onFinish}  validateMessages={validateMessages}>
+              <Form  form={formAddProduct} onFinish={onFinish} validateFields={validateMessages}>
             <Form.Item
-              name="product" label="Product"
+              name="product_name" label="Product"
               rules={[
                 {
                   required: true,
@@ -280,10 +336,32 @@ import {
             <Form.Item name="description"  label="Description">
               <Input.TextArea />
             </Form.Item>
+            <Form.Item
+              name="category"
+              label="Category"
+              rules={[
+                {
+                  required: true,
+
+                  message: "please select category",
+                },
+              ]}
+            >
+             
+              <Select placeholder="Select a category" onSelect={(option)=>console.log(option)}>
+                {categoriesDropdown.map((category) => {
+              return (
+                <Option key={category.categoryId} value={category.categoryId} >
+                  {category.category_name}
+                </Option>
+              );
+            })}
+              </Select> 
+            </Form.Item>
             <Form.Item name="quantity" label="Quantity" rules={[{ type: 'number', min: 0, max: 99 }]}>
             <InputNumber />
             </Form.Item>
-            <Form.Item name="price" label="Price" rules={[{ type: 'number', min: 0, max: 99 }]}>
+            <Form.Item name="price" label="Price" rules={[{ type: 'number', min: 0}]}>
             <InputNumber />
             </Form.Item>
 
@@ -300,35 +378,12 @@ import {
               <Input.TextArea />
             </Form.Item>
 
-          {/* <Form.Item name= "createdAt" type="date" label="Created At">
-            <DatePicker 
-            // selected={ this.state.createdAt }
-              onChange={ handleChange }
-              name="createdAt"
-              dateFormat="MM/dd/yyyy" />
-            </Form.Item>
-            */ }
-            <Form.Item name="thruDate" type="date" label="Thru Date">
-            <DatePicker 
-            //selected={ this.state.expiredAt }
-              /*onChange={ this.handleChange }
-              dataIndex= "expiredAt"
-              key = "expiredAt"
-              name="expiredAt"
-            dateFormat="MM/dd/yyyy" */
-             />
-             </Form.Item>
-             
+            
+
            </Form>
        </Modal>
  
-         {/* <Card title="Default size card" extra={<EditOutlined onClick={showModal}/> } style={{ width: 300 }}>
-             <p>Card content</p>
-             <p>Card content</p>
-             <p>Card content</p>
-          </Card>  
-           give use state in place of tableData in datasource */}
-          <Table columns={columns} dataSource={tableData} onChange={handleChange}/>
+          <Table columns={columns} scroll={{ y: 400 }} dataSource={products} onChange={handleChange}/>
           <Modal title="Edit Product" visible={editProductVisible}  onCancel={handleEditProductCancel} footer={[
             
              <Button key="submit" type="primary" onClick={handleEditProductSubmit}>
@@ -337,11 +392,11 @@ import {
              
            ]}>
 
-<Form form={formEditProduct} initialValues={{ size: "small" }}>
+                <Form form={formEditProduct} initialValues={{ size: "small" }}>
                     <Form.Item
               // how will the value get mapped ? should not there be uneditabel fields like date created?
                      //   dataIndex="category"
-                     name="product" 
+                     name="product_name" 
                      rules={[
                         {
                             required: true,
@@ -361,6 +416,28 @@ import {
                         ]}
                     >
                         <Input placeholder="Description"  />
+                    </Form.Item>
+                    <Form.Item
+                      name="category"
+                      label="Category"
+                      rules={[
+                        {
+                          required: true,
+
+                          message: "please select category",
+                        },
+                      ]}
+                    >
+                    
+                      <Select placeholder="Select a category" onSelect={(option)=>console.log(option)}>
+                        {categoriesDropdown.map((category) => {
+                      return (
+                        <Option key={category.categoryId} value={category.categoryId} >
+                          {category.category_name}
+                        </Option>
+                      );
+                    })}
+                      </Select> 
                     </Form.Item>
                     <Form.Item
                         name="quantity"
@@ -414,24 +491,14 @@ import {
                         name="ingredients"
                         rules={[
                         {
-                            required: true,
+                           
                             message: "Please input ingredients!",
                         },
                         ]}
                     >
                         <Input placeholder="Ingredients"  />
                     </Form.Item>
-                    <Form.Item
-                        name="thruDate"
-                        rules={[
-                        {
-                            required: true,
-                            message: "Please input Thru Date!",
-                        },
-                        ]}
-                    >
-                        <Input placeholder=" Thru Date(DD/MM/YYYY)"  />
-                        </Form.Item>
+                   
                   
             
                     </Form>

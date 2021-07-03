@@ -95,7 +95,7 @@ const Register = ({history}) => {
               },
             ]}
           >
-            <Input placeholder="First Name" prefix={<UserOutlined />} />
+            <Input placeholder="User Name" prefix={<UserOutlined />} />
           </Form.Item>
           <Form.Item
             name="firstname"
@@ -107,7 +107,7 @@ const Register = ({history}) => {
               },
             ]}
           >
-            <Input placeholder="Last Name" prefix={<UserOutlined />} />
+            <Input placeholder="First Name" prefix={<UserOutlined />} />
           </Form.Item>
           <Form.Item
             name="lastname"
@@ -119,7 +119,7 @@ const Register = ({history}) => {
               },
             ]}
           >
-            <Input placeholder="Name" prefix={<UserOutlined />} />
+            <Input placeholder="Last Name" prefix={<UserOutlined />} />
           </Form.Item>
           <Form.Item
             name="email"

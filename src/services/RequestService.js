@@ -7,18 +7,21 @@ import RestfulProvider from "../utils/RestfulProvider";
   const login = (data) => {
     return RestfulProvider.post("api/login/", data);
   };
+  const logout = (data) => {
+    return RestfulProvider.post("api/logout/", data);
+  };
   const getUserStore = (id) => {
     return RestfulProvider.get("api/store/getStoreByOwnerId/"+id);
   };
   const addStore = (data) => {
     return RestfulProvider.post("api/store/addStore/", data);
   }; 
-  // ************************************
+
   const addCategory = (data) => {
     return RestfulProvider.post("api/category/addCategory/", data);
   }; 
   const updateCategory = (data) => {
-    return RestfulProvider.put("api/category/updateCategory", data);
+    return RestfulProvider.put("api/category/updateCategory/"+data.categoryId, data);
   }; 
   const getCategoryByStoreId = (id) =>{
     return RestfulProvider.get("api/category/getCategoryByStoreId/"+id);
@@ -37,14 +40,18 @@ import RestfulProvider from "../utils/RestfulProvider";
     return RestfulProvider.post("api/product/addProduct/", data);
   }; 
   const updateProduct = (data) => {
-    return RestfulProvider.put("api/product/updateProduct", data);
+    return RestfulProvider.put("api/product/updateProduct/"+data.productId, data);
   }; 
-  const getProduct = (id) =>{
-    return RestfulProvider.get("api/product/getProduct"+id);
+  const getProduct = () =>{
+    return RestfulProvider.get("api/product/getProduct/");
   };
- const deleteProduct = (data) =>{
-    return RestfulProvider.delete("api/product/deleteProduct");
+  const getProductByStoreId = (id) =>{
+    return RestfulProvider.get("api/product/getProductByStoreId/"+id);
+  };
+ const deleteProduct = (id) =>{
+    return RestfulProvider.delete("api/product/deleteProduct/"+id);
  };
+
 
   const verifyEmail = (token) => {
     return RestfulProvider.get("api/email-verify/?token="+token);
@@ -58,10 +65,16 @@ const passwordResetTokenCheck = (uidb,token) =>{
 const passwordResetComplete = (data) =>{
   return RestfulProvider.patch("api/password-reset-complete/",data)
 }
-
+const getOwnerByEmail = (email) =>{
+  return RestfulProvider.get("api/getOwnerByEmail/?email="+email)
+}
+const updateStore = (data) => {
+  return RestfulProvider.put("api/store/updateStore/", data);
+}; 
   export {
       register,
       login,
+      logout,
       getUserStore,
       addStore,
 
@@ -74,12 +87,16 @@ const passwordResetComplete = (data) =>{
       addProduct,
       updateProduct,
       getProduct,
+      getProductByStoreId,
       deleteProduct,
 
 
       verifyEmail,
       requestResetEmail,
       passwordResetTokenCheck,
-      passwordResetComplete
+      passwordResetComplete,
+
+      getOwnerByEmail,
+      updateStore
   };
 

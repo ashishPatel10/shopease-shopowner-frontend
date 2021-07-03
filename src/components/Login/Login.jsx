@@ -39,32 +39,54 @@ const Login = ({auth,history}) => {
             .then((data) => {
                console.log(data);
               // set state   
-              if (data.type !== "error") {
+             
                 showLoaderChange(0);
+                
+               
+               
+               if(data.data.store_flag)
+               {
+               
+              
                 auth.setUserInfo({
                   accessToken: data.data.tokens.access,
                   refreshToken:data.data.tokens.refresh,
                   email: data.data.email,
                   ownerId:data.data.id,
-                  username:data.data.username
+                  username:data.data.username,
+                
                 });
                 auth.setCommonHeaders();
                 console.log(toJS(auth.userInfo));
-               if(data.data.store_flag)
-               {
-                 history.push("/dashboard")
+                history.push("/dashboard");
+                 getUserStore(data.data.id).then((response)=>{
+                  console.log(response);
+                  auth.setOwnerInfo({
+                    store:response
+                  });
+                })
                }
                else{
                  getUserStore(data.data.id).then((response)=>{
                   console.log(response);
                 }).catch((error) => {
+                  auth.setUserInfo({
+                    accessToken: data.data.tokens.access,
+                    refreshToken:data.data.tokens.refresh,
+                    email: data.data.email,
+                    ownerId:data.data.id,
+                    username:data.data.username,
+                  
+                  });
+                  auth.setCommonHeaders();
+                  console.log(toJS(auth.userInfo));
                   setShowStoreForm(1)
                   // console.log(error.response)
                   message.info("please enter your store details");
                 });
                 
                }
-              }
+              
               formLogin.resetFields();
             })
             .catch((error) => {
@@ -107,10 +129,14 @@ const Login = ({auth,history}) => {
                console.log(data);
                setShowStoreForm(1)
               if (data.type !== "error") {
+                auth.setOwnerInfo({
+                  store:data.data
+                });
                 history.push("/dashboard")
                 message.success("login successful !!");
               }
               formStoreProfile.resetFields();
+
             })
             .catch((error) => {
               showLoaderChange(0)

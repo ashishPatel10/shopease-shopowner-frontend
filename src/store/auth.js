@@ -18,6 +18,11 @@ class AuthStore {
     localStorage.setItem("userInfo", JSON.stringify(userInfo));
     //  this.setCommonHeaders();
   };
+  setOwnerInfo = (ownerInfo) => {
+    // this.userInfo = userInfo;
+    localStorage.setItem("ownerInfo", JSON.stringify(ownerInfo));
+    //  this.setCommonHeaders();
+  };
 
   removeUserInfo = () => {
     this.userInfo = {};
