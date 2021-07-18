@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Layout, Menu, Badge, Col, Row, Dropdown, Avatar } from "antd";
+import React, { useState, useEffect } from "react";
+import { Layout, Menu, Badge, Col, Row, Dropdown, Avatar,Card,message} from "antd";
 import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
@@ -7,7 +7,12 @@ import {
   HddOutlined,
   BarChartOutlined,
   InboxOutlined,
+  TeamOutlined,
+  ShopOutlined,
+  ShoppingOutlined 
 } from "@ant-design/icons";
+
+import moment from "moment";
 import "./Dashboard.scss";
 import { Switch, Link, useLocation } from "react-router-dom";
 
@@ -16,7 +21,7 @@ import PrivateRoute from "../../routes/privateRoutes";
 import Categories from "../Categories/Categories";
 import Products from "../Products/Products";
 import StoreProfile from "../StoreProfile/StoreProfile";
-
+import DashboardContent from "./DashboardContent";
 import Order from "../Order/Order"
 
 
@@ -31,6 +36,8 @@ const { Header, Sider, Content } = Layout;
 const Dashboard = () => {
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
+  
+
 
   const toggle = () => {
     setCollapsed(!collapsed);
@@ -69,6 +76,7 @@ const Dashboard = () => {
       <Menu.Divider />
     </Menu>
   );
+ 
   return (
     <Layout style={{ height: "100vh" }}>
       <Sider trigger={null} collapsible collapsed={collapsed}>
@@ -129,21 +137,22 @@ const Dashboard = () => {
            
           </Header>
           <Content
-            className="site-layout-background"
-            style={{
-              margin: '24px 16px',
-              padding: 24,
-              height: "100vh",
-            }}
-          >
-           <Switch>
+        className="site-layout-background"
+        style={{
+          margin: '24px 16px',
+          padding: 24,
+          height: "100vh",
+        }}
+      >
+          <Switch>
             <PrivateRoute exact={true} path="/categories" component={Categories} />
              <PrivateRoute exact={true} path="/products" component={Products} /> 
             <PrivateRoute exact={true} path="/profile" component={Profiles} />
             <PrivateRoute exact={true} path="/order" component={Order} />
+            <PrivateRoute exact={true} path="/dashboard" component={DashboardContent} />
             
         </Switch>
-          </Content>
+        </Content>
         </Layout>
       </Layout> );
 }

@@ -32,7 +32,7 @@ const ResetPassword = ({ history }) => {
                       console.log(data);
                       showLoaderChange(0);
                       history.push("/login");
-                      message.success(data.message);
+                      message.success(data.message,2);
                     })
                     .catch((e) => {
                         console.log(e);

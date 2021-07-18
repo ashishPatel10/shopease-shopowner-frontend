@@ -15,7 +15,14 @@ const EnterEmail = ({history}) => {
             })
             .then((data) => {
                 console.log(data);
-               
+                
+                if(data.data.success)
+                {
+                  message.success(data.data.success);
+                }
+                else{
+                  message.error("This email is not registered");
+                }
             })
             .catch((error) => {
                 console.log(error.response)

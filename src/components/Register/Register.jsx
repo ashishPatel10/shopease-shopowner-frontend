@@ -55,9 +55,12 @@ const Register = ({history}) => {
 
             })
             .catch((error) => {
-              if (error && error.response && error.response.data) {
-                message.error(error.response.data.error);
-              }
+              let errorKeys = Object.keys(error.response.data);
+              errorKeys.map((key)=>error.response.data[`${key}`] ?  message.error(error.response.data[`${key}`]) : null)
+              console.log(error);
+              // if (error && error.response && error.response.data) {
+              //   message.error(error.response.data.error);
+              // }
             });
         })
        
@@ -143,6 +146,10 @@ const Register = ({history}) => {
                 required: true,
                 message: "Please input your password!",
               },
+              {
+                min:8,
+                message: "password should be of min length 8"
+              }
             ]}
             hasFeedback
           >
@@ -156,6 +163,10 @@ const Register = ({history}) => {
               {
                 required: true,
                 message: "Please confirm your password!",
+              },
+              {
+                min:8,
+                message: "password should be of min length 8"
               },
               ({ getFieldValue }) => ({
                 validator(rule, value) {

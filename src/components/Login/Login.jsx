@@ -8,7 +8,9 @@ import {
   import {
     login,
     getUserStore,
-    addStore
+    addStore,
+    getCategoryByStoreId,
+    getProductByStoreId
   } from "./../../services/RequestService";
   import Background from "../Background/Background";
   import StoreProfile from "../StoreProfile/StoreProfile";
@@ -47,7 +49,7 @@ const Login = ({auth,history}) => {
                if(data.data.store_flag)
                {
                
-              
+                
                 auth.setUserInfo({
                   accessToken: data.data.tokens.access,
                   refreshToken:data.data.tokens.refresh,
@@ -58,13 +60,25 @@ const Login = ({auth,history}) => {
                 });
                 auth.setCommonHeaders();
                 console.log(toJS(auth.userInfo));
-                history.push("/dashboard");
-                 getUserStore(data.data.id).then((response)=>{
+                getUserStore(data.data.id).then((response)=>{
                   console.log(response);
                   auth.setOwnerInfo({
                     store:response
                   });
+                }).then(()=>{
+                  getProductFunction()
+               
+                  getCategoryFunction()
                 })
+                
+               
+                 setTimeout(() => {
+                  history.push("/dashboard");
+                 }, 1500);
+                 
+               
+               
+               
                }
                else{
                  getUserStore(data.data.id).then((response)=>{
@@ -93,10 +107,7 @@ const Login = ({auth,history}) => {
               showLoaderChange(0)
               console.log(error.response)
               if (error) {
-                if(error.response.status == 401 && error.response.data.code === "token_not_valid")
-                {
-
-                }
+               
                 message.error(error.response.data.detail);
               }
             });
@@ -132,7 +143,9 @@ const Login = ({auth,history}) => {
                 auth.setOwnerInfo({
                   store:data.data
                 });
-                history.push("/dashboard")
+                setTimeout(() => {
+                  history.push("/dashboard");
+                 }, 1000);
                 message.success("login successful !!");
               }
               formStoreProfile.resetFields();
@@ -149,6 +162,36 @@ const Login = ({auth,history}) => {
         })
         
     }
+    const getProductFunction = () => {
+      getProductByStoreId(JSON.parse(localStorage.getItem("ownerInfo")).store.storeId)
+      .then((data) => {
+        console.log(data);
+       localStorage.setItem("productCount", JSON.stringify(data.length));
+        })
+      .catch((error) => {
+        console.log(error.response)
+        if (error) {
+          message.error(error.response);
+        }
+      });
+    }
+    const getCategoryFunction = () => {
+      getCategoryByStoreId(JSON.parse(localStorage.getItem("ownerInfo")).store.storeId)
+      .then((data) => {
+        console.log(data);
+        localStorage.setItem("categoryCount", JSON.stringify(data.length));
+        })
+      .catch((error) => {
+        console.log(error.response)
+        if (error) {
+          // message.error(error.response.data.detail);
+        }
+      });
+    }
+    useEffect(() => {
+      // getProductFunction()
+      // getCategoryFunction()
+  }, []); 
     return ( 
         <Background>
           {showStoreForm == 0 ?  

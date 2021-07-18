@@ -1,5 +1,5 @@
 import React,{useState,useReact, useEffect} from 'react';
-import { Card,Modal, Button,Form,Input,InputNumber,Table, Tag, Space,Popconfirm, Select, message } from 'antd';
+import { Card,Modal, Button,Form,Input,InputNumber,Table, Tag, Space,Popconfirm, Select, message,Upload,Progress } from 'antd';
 import { Link } from "react-router-dom";
 import {
   DownloadOutlined,
@@ -17,6 +17,7 @@ import {
     getProductByStoreId
   } from "./../../services/RequestService";
   import moment from "moment";
+  import axios from "axios"
 
   const { Option } = Select;
   const Products = () => {
@@ -36,6 +37,9 @@ import {
       rackNo: 1,
     dateCreated : ""
     }]);
+    const [defaultFileList, setDefaultFileList] = useState([]);
+  const [progress, setProgress] = useState(0);
+  const [image, setImage] = useState(null);
 
     const onFinish = (values) => {
         console.log(values);
@@ -168,8 +172,47 @@ import {
                 range: '${label} must be between ${min} and ${max}',
               },
             };
+           const onFileChange = event => {
+    
+              // Update the state
+              setImage(event.target.files[0]);
             
+            };
+            
+            // On file upload (click the upload button)
+          const  onFileUpload = (record) => {
+            console.log(record);
+              // Create an object of formData
+              const formData = new FormData();
+            
+              // Update the formData object
+              formData.append(
+                "imagePath",
+               image,
+               
+              );
+              formData.append(
+                "title",
+               record.productId,
+               
+              );
+            
+              // Details of the uploaded file
+              console.log(image);
+            
+              // Request made to the backend api
+              // Send formData object
+              axios.post("http://ec2-52-56-96-88.eu-west-2.compute.amazonaws.com/api/upload/", formData);
+            };
         const columns = [
+          // {
+          //   title: '',
+          //   key: 'action',
+          //  width:200,
+          //   render: (text, record) => (
+               
+          //   ),
+          // },
         {
             title: 'Product',
             dataIndex: 'product_name',
@@ -383,7 +426,19 @@ import {
            </Form>
        </Modal>
  
-          <Table columns={columns} scroll={{ y: 400 }} dataSource={products} onChange={handleChange}/>
+          <Table rowKey={(record) => record.productId} columns={columns} 
+          scroll={{ y: 400 }} 
+           expandable={{
+              expandedRowRender: record =>  <>
+              <input type="file" onChange={onFileChange} />
+                <button onClick={()=>onFileUpload(record)}>
+                  Upload!
+                </button>
+             </>,
+              rowExpandable: record => record.name !== 'Not Expandable',
+            }} 
+            dataSource={products} 
+            onChange={handleChange}/>
           <Modal title="Edit Product" visible={editProductVisible}  onCancel={handleEditProductCancel} footer={[
             
              <Button key="submit" type="primary" onClick={handleEditProductSubmit}>

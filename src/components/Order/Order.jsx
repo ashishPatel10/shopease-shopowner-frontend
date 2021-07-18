@@ -115,25 +115,25 @@ import {
         >
                         
             <Form.Item name="orderId"  label="Order ID">
-              <Input.TextArea readOnly />
+              <Input.TextArea  />
            </Form.Item>
 
            <Form.Item name="product"  label="Products">
-              <Input.TextArea readOnly />
+              <Input.TextArea  />
            </Form.Item>
 
            <Form.Item name="discount"  label="Discounted Amount">
-              <Input.TextArea readOnly />
+              <Input.TextArea  />
            </Form.Item>
 
 
            <Form.Item name="amount"  label="Amount Receiveable">
-              <Input.TextArea readOnly />
+              <Input.TextArea  />
            </Form.Item>
 
 
            <Form.Item name="Due Date"  label="Due Date">
-              <Input.TextArea  readOnly/>
+              <Input.TextArea  />
            </Form.Item>
 
            <RadioGroup horizontal>

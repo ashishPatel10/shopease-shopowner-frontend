@@ -17,6 +17,7 @@ const { TabPane } = Tabs;
 const Profiles = ({auth}) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isUserModalVisible, setIsUserModalVisible] = useState(false);
+  const [owner, setOwner] = useState(null);
 
   const [formStoreProfile] = Form.useForm();
   const [formUserProfile] = Form.useForm();
@@ -28,9 +29,10 @@ const Profiles = ({auth}) => {
           console.log(values);
           updateStore(
             {
-              
-            storeId: values["storeId"] ,
+              ownerId:JSON.parse(localStorage.getItem("ownerInfo")).store.ownerId ,
+            storeId: JSON.parse(localStorage.getItem("ownerInfo")).store.storeId ,
             storeRefId:JSON.parse(localStorage.getItem("ownerInfo")).store.storeRefId,
+             storeCode:values["storeCode"],
             storeName: values["storeName"],
             streetName: values["streetName"],
             postalcode: values["postalcode"],
@@ -40,27 +42,24 @@ const Profiles = ({auth}) => {
             secondaryContact: values["secondaryContact"],
             modifier: JSON.parse(localStorage.getItem("userInfo")).username,
             modified: moment().format("YYYY-MM-DD"),
-            
+           
             })
             .then((data) => {
               console.log(data);
               
-              if (data.type !== "error")  {
-                message.success("Store details updated successfully!!")
-              }
-              formStoreProfile.resetFields();
-              getUserStore(data.data.id).then((response)=>{
-                console.log(response);
+              message.success("Store details updated successfully!!")
+             
                 auth.setOwnerInfo({
-                  store:response
-                });
-              })
+                  store:data
+                })
+              formStoreProfile.resetFields();
+              setIsModalVisible(false);
             })
             .catch((error) => {
-              
               console.log(error.response)
-              if (error) {
-                message.error(error.response.data.detail);
+              if (error.response.data) {
+                let errorKeys = error.response ?  Object.keys(error.response.data) : [];
+                errorKeys.map((key)=>error.response.data[`${key}`] ?  message.error(key + " " +error.response.data[`${key}`]) : null)
               }
             })
         })
@@ -70,6 +69,7 @@ const Profiles = ({auth}) => {
     setIsModalVisible(true);
 
      formStoreProfile.setFieldsValue({
+       storeCode:JSON.parse(localStorage.getItem("ownerInfo")).store.storeCode,
       storeName:JSON.parse(localStorage.getItem("ownerInfo")).store.storeName,
       streetName:JSON.parse(localStorage.getItem("ownerInfo")).store.streetName,
       postalcode:JSON.parse(localStorage.getItem("ownerInfo")).store.postalcode,
@@ -99,6 +99,7 @@ const Profiles = ({auth}) => {
     console.log(JSON.parse(localStorage.getItem("userInfo")).email);
         getOwnerByEmail(JSON.parse(localStorage.getItem("userInfo")).email).then((data) => {
           console.log(data);
+          setOwner(data);
           localStorage.setItem("owner", JSON.stringify(data));
           })
         .catch((error) => {
@@ -118,7 +119,7 @@ const Profiles = ({auth}) => {
           <p>
             <>
               <Card
-                title="Sam Smith"
+                title={owner != null ? owner.username : "" }
                 // extra={
                 //   <Button type="primary" onClick={showUserModal}>
                 //     Edit
@@ -126,10 +127,10 @@ const Profiles = ({auth}) => {
                 // }
                 style={{ width: 300 }}
               >
-                <p>User Name : {JSON.parse(localStorage.getItem("owner")) != null ? JSON.parse(localStorage.getItem("owner")).username : ""}</p>
-                <p> First Name : {JSON.parse(localStorage.getItem("owner")) != null ?JSON.parse(localStorage.getItem("owner")).firstname: ""} </p>
-                <p> Last Name : {JSON.parse(localStorage.getItem("owner")) != null ?JSON.parse(localStorage.getItem("owner")).lastname: ""} </p>
-                <p> Email ID : {JSON.parse(localStorage.getItem("owner")) != null ?JSON.parse(localStorage.getItem("owner")).email: ""}</p>
+                <p>User Name : {owner != null ? owner.username : "" }</p>
+                <p> First Name : {owner != null ?owner.firstname: ""} </p>
+                <p> Last Name : {owner != null ?owner.lastname: ""} </p>
+                <p> Email ID : {owner != null ?owner.email: ""}</p>
                 
               </Card>
 
@@ -222,7 +223,7 @@ const Profiles = ({auth}) => {
           <p>
             <>
               <Card
-                title="Daily Essentials Store"
+                title={JSON.parse(localStorage.getItem("ownerInfo")).store.storeName}
                 extra={
                   <Button type="primary" onClick={showModal}>
                     Edit
@@ -242,7 +243,8 @@ const Profiles = ({auth}) => {
               <Modal
                 title="Store Information"
                 visible={isModalVisible}
-                onOk={handleOk}
+                footer={null}
+               
                 onCancel={handleCancel}
               >
                 <p>
@@ -271,6 +273,17 @@ const Profiles = ({auth}) => {
                       ]}
                     >
                       <Input placeholder="Street Name" />
+                    </Form.Item>
+                    <Form.Item
+                      name="storeCode"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please input Store Code!",
+                        },
+                      ]}
+                    >
+                      <Input placeholder="Store Code" />
                     </Form.Item>
                     <Form.Item
                       name="postalcode"
